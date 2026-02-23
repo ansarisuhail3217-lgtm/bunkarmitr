@@ -1,13 +1,15 @@
 import { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { getCurrentUser, getUsers, saveUsers, getRatings, saveRatings } from '@/lib/store';
 import { Rating } from '@/lib/types';
 import StarRating from '@/components/StarRating';
 import Navbar from '@/components/Navbar';
+import { toast } from 'sonner';
 
 export default function RatePage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const currentUser = getCurrentUser();
   const users = getUsers();
   const receiver = users.find((u) => u.id === id);
@@ -15,7 +17,10 @@ export default function RatePage() {
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState('');
 
-  if (!currentUser) { navigate('/login'); return null; }
+  if (!currentUser) {
+    navigate(`/login?redirect=${encodeURIComponent(location.pathname)}`);
+    return null;
+  }
   if (!receiver) {
     return (
       <div className="min-h-screen bg-background">
@@ -29,7 +34,7 @@ export default function RatePage() {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (rating === 0) return;
+    if (rating === 0) { toast.error('कृपया रेटिंग चुनें'); return; }
 
     const ratings = getRatings();
     const newRating: Rating = {
@@ -44,23 +49,22 @@ export default function RatePage() {
     };
     saveRatings([...ratings, newRating]);
 
-    // Update user average
     const allRatings = [...ratings, newRating].filter((r) => r.receiverId === receiver.id);
     const avg = allRatings.reduce((s, r) => s + r.ratingValue, 0) / allRatings.length;
     const updatedUsers = users.map((u) =>
       u.id === receiver.id ? { ...u, averageRating: Math.round(avg * 10) / 10, totalRatings: allRatings.length } : u
     );
     saveUsers(updatedUsers);
-
+    toast.success('रेटिंग सफलतापूर्वक सबमिट हो गई!');
     navigate(`/profile/${receiver.id}`);
   };
 
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="container mx-auto px-4 py-8 flex justify-center">
-        <div className="w-full max-w-md bg-card rounded-2xl shadow-elevated border border-border p-6 md:p-8">
-          <h1 className="text-2xl font-bold text-center text-gradient-hero mb-2">रेटिंग दें</h1>
+      <div className="container mx-auto px-4 py-6 md:py-8 flex justify-center">
+        <div className="w-full max-w-md bg-card rounded-2xl shadow-elevated border border-border p-5 md:p-8">
+          <h1 className="text-xl md:text-2xl font-bold text-center text-gradient-hero mb-2">रेटिंग दें</h1>
           <p className="text-center text-sm text-muted-foreground mb-6">{receiver.name} को रेटिंग दें</p>
           <form onSubmit={submit} className="space-y-5">
             <div className="flex justify-center">

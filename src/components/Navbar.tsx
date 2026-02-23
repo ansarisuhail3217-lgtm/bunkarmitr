@@ -2,6 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { getCurrentUser, setCurrentUser } from '@/lib/store';
 import { useState } from 'react';
 import { Menu, X, LogOut, User, Home } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -10,6 +11,7 @@ export default function Navbar() {
 
   const logout = () => {
     setCurrentUser(null);
+    toast.success('सफलतापूर्वक लॉगआउट हो गया');
     navigate('/');
     setOpen(false);
   };
@@ -31,7 +33,7 @@ export default function Navbar() {
       <div className="container mx-auto flex items-center justify-between h-14 px-4">
         <Link to="/" className="flex items-center gap-2 font-bold text-lg">
           <span className="text-gradient-hero text-xl">🪡</span>
-          <span className="text-gradient-hero font-extrabold">SareeSetu</span>
+          <span className="text-gradient-hero font-extrabold">LoomLink</span>
         </Link>
 
         {/* Desktop nav */}

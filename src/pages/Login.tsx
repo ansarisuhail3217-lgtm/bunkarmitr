@@ -1,12 +1,15 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { getUsers, setCurrentUser } from '@/lib/store';
 import Navbar from '@/components/Navbar';
+import { toast } from 'sonner';
 
 export default function LoginPage() {
   const [mobile, setMobile] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirect = searchParams.get('redirect');
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -14,17 +17,19 @@ export default function LoginPage() {
     const user = users.find((u) => u.mobile === mobile);
     if (user) {
       setCurrentUser(user);
-      navigate('/dashboard');
+      toast.success('सफलतापूर्वक लॉगिन हो गया!');
+      navigate(redirect || '/dashboard');
     } else {
       setError('यह मोबाइल नंबर पंजीकृत नहीं है');
+      toast.error('कृपया सही मोबाइल नंबर डालें');
     }
   };
 
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="container mx-auto px-4 py-12 flex justify-center">
-        <div className="w-full max-w-md bg-card rounded-2xl shadow-elevated border border-border p-8">
+      <div className="container mx-auto px-4 py-8 md:py-12 flex justify-center">
+        <div className="w-full max-w-md bg-card rounded-2xl shadow-elevated border border-border p-6 md:p-8">
           <h1 className="text-2xl font-bold text-center text-gradient-hero mb-6">लॉगिन करें</h1>
           <form onSubmit={handleLogin} className="space-y-5">
             <div>

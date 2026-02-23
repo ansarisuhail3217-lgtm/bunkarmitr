@@ -1,18 +1,23 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { getCurrentUser, getJobs, saveJobs } from '@/lib/store';
 import { ROLE_LABELS, UserRole, Job } from '@/lib/types';
 import Navbar from '@/components/Navbar';
+import { toast } from 'sonner';
 
 const roles = Object.entries(ROLE_LABELS) as [UserRole, string][];
 
 export default function PostJob() {
   const user = getCurrentUser();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [form, setForm] = useState({ roleRequired: '' as UserRole, description: '', urgency: 'medium' as 'low' | 'medium' | 'high' });
 
-  if (!user) { navigate('/login'); return null; }
+  if (!user) {
+    navigate(`/login?redirect=${encodeURIComponent(location.pathname)}`);
+    return null;
+  }
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,15 +34,16 @@ export default function PostJob() {
       createdAt: new Date().toISOString(),
     };
     saveJobs([...jobs, newJob]);
+    toast.success('काम सफलतापूर्वक पोस्ट किया गया!');
     navigate('/dashboard');
   };
 
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="container mx-auto px-4 py-8 flex justify-center">
-        <div className="w-full max-w-lg bg-card rounded-2xl shadow-elevated border border-border p-6 md:p-8">
-          <h1 className="text-2xl font-bold text-center text-gradient-hero mb-6">काम दें</h1>
+      <div className="container mx-auto px-4 py-6 md:py-8 flex justify-center">
+        <div className="w-full max-w-lg bg-card rounded-2xl shadow-elevated border border-border p-5 md:p-8">
+          <h1 className="text-xl md:text-2xl font-bold text-center text-gradient-hero mb-6">काम दें</h1>
           <form onSubmit={submit} className="space-y-5">
             <div>
               <label className="block text-sm font-medium mb-1.5">किस भूमिका की जरूरत है? *</label>

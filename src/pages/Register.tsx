@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ROLE_LABELS, VARANASI_AREAS, UserRole, User } from '@/lib/types';
-import { getUsers, saveUsers, setCurrentUser } from '@/lib/store';
+import { ROLE_LABELS, GORAKHPUR_AREAS, UserRole, User } from '@/lib/types';
+import { getUsers, saveUsers, setCurrentUser, DEFAULT_LAT, DEFAULT_LNG } from '@/lib/store';
 import Navbar from '@/components/Navbar';
 import { ChevronLeft, ChevronRight, MapPin } from 'lucide-react';
+import { toast } from 'sonner';
 
 const roles = Object.entries(ROLE_LABELS) as [UserRole, string][];
 const STEPS = ['भूमिका', 'व्यक्तिगत', 'काम विवरण', 'लोकेशन'];
@@ -24,8 +25,8 @@ export default function RegisterPage() {
   const getLocation = () => {
     setLocating(true);
     navigator.geolocation.getCurrentPosition(
-      (pos) => { setLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude }); setLocating(false); },
-      () => { setLocation({ lat: 25.3176, lng: 83.0068 }); setLocating(false); }
+      (pos) => { setLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude }); setLocating(false); toast.success('लोकेशन मिल गई!'); },
+      () => { setLocation({ lat: DEFAULT_LAT, lng: DEFAULT_LNG }); setLocating(false); toast.info('डिफ़ॉल्ट लोकेशन (गोरखपुर) सेट की गई'); }
     );
   };
 
@@ -49,8 +50,8 @@ export default function RegisterPage() {
       availability: form.availability,
       rate: form.rate || '',
       profileImage: '',
-      lat: location?.lat || 25.3176,
-      lng: location?.lng || 83.0068,
+      lat: location?.lat || DEFAULT_LAT,
+      lng: location?.lng || DEFAULT_LNG,
       averageRating: 0,
       totalRatings: 0,
       isApproved: true,
@@ -58,24 +59,25 @@ export default function RegisterPage() {
     };
     saveUsers([...users, newUser]);
     setCurrentUser(newUser);
+    toast.success('पंजीकरण सफल! आपका अकाउंट बन गया।');
     navigate('/dashboard');
   };
 
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="container mx-auto px-4 py-8 flex justify-center">
-        <div className="w-full max-w-lg bg-card rounded-2xl shadow-elevated border border-border p-6 md:p-8">
-          <h1 className="text-2xl font-bold text-center text-gradient-hero mb-2">नया पंजीकरण</h1>
+      <div className="container mx-auto px-4 py-6 md:py-8 flex justify-center">
+        <div className="w-full max-w-lg bg-card rounded-2xl shadow-elevated border border-border p-5 md:p-8">
+          <h1 className="text-xl md:text-2xl font-bold text-center text-gradient-hero mb-2">नया पंजीकरण</h1>
 
           {/* Progress */}
-          <div className="flex items-center justify-center gap-2 mb-8">
+          <div className="flex items-center justify-center gap-1.5 md:gap-2 mb-6 md:mb-8">
             {STEPS.map((s, i) => (
-              <div key={i} className="flex items-center gap-2">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${
+              <div key={i} className="flex items-center gap-1.5 md:gap-2">
+                <div className={`w-7 h-7 md:w-8 md:h-8 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${
                   i <= step ? 'gradient-hero text-primary-foreground' : 'bg-muted text-muted-foreground'
                 }`}>{i + 1}</div>
-                {i < STEPS.length - 1 && <div className={`w-6 h-0.5 ${i < step ? 'bg-primary' : 'bg-border'}`} />}
+                {i < STEPS.length - 1 && <div className={`w-4 md:w-6 h-0.5 ${i < step ? 'bg-primary' : 'bg-border'}`} />}
               </div>
             ))}
           </div>
@@ -86,7 +88,7 @@ export default function RegisterPage() {
             <div className="grid grid-cols-2 gap-3">
               {roles.map(([key, label]) => (
                 <button key={key} onClick={() => update('role', key)}
-                  className={`p-4 rounded-xl text-sm font-medium border transition-all ${
+                  className={`p-3 md:p-4 rounded-xl text-sm font-medium border transition-all ${
                     form.role === key ? 'border-primary bg-primary/10 text-primary shadow-warm' : 'border-border bg-background text-foreground hover:border-primary/50'
                   }`}>
                   {label}
@@ -119,7 +121,7 @@ export default function RegisterPage() {
                 <select value={form.area} onChange={(e) => update('area', e.target.value)}
                   className="w-full px-4 py-3 rounded-xl border border-input bg-background text-foreground focus:ring-2 focus:ring-ring outline-none">
                   <option value="">इलाका चुनें</option>
-                  {VARANASI_AREAS.map((a) => <option key={a} value={a}>{a}</option>)}
+                  {GORAKHPUR_AREAS.map((a) => <option key={a} value={a}>{a}</option>)}
                 </select>
               </div>
               <div>
@@ -147,7 +149,7 @@ export default function RegisterPage() {
           {/* Step 3: Location */}
           {step === 3 && (
             <div className="space-y-4 text-center">
-              <p className="text-sm text-muted-foreground">अपनी लोकेशन शेयर करें ताकि पास के लोग आपको ढूंढ सकें</p>
+              <p className="text-sm text-muted-foreground">अपनी लोकेशन शेयर करें ताकि गोरखपुर में पास के लोग आपको ढूंढ सकें</p>
               <button onClick={getLocation} disabled={locating}
                 className="inline-flex items-center gap-2 px-6 py-3 gradient-hero text-primary-foreground font-semibold rounded-xl shadow-warm hover:scale-105 transition-transform disabled:opacity-50">
                 <MapPin size={18} /> {locating ? 'खोज रहे हैं...' : 'लोकेशन लें'}
