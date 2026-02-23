@@ -1,5 +1,5 @@
 import { getJobs, getCurrentUser } from '@/lib/store';
-import { ROLE_LABELS, URGENCY_LABELS } from '@/lib/types';
+import { ROLE_LABELS, URGENCY_LABELS, RATE_RANGES } from '@/lib/types';
 import Navbar from '@/components/Navbar';
 import { MapPin, Clock } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
@@ -43,6 +43,11 @@ export default function JobsPage() {
                     <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
                       job.urgency === 'high' ? 'bg-destructive/10 text-destructive' : job.urgency === 'medium' ? 'bg-accent/20 text-accent-foreground' : 'bg-muted text-muted-foreground'
                     }`}>{URGENCY_LABELS[job.urgency]}</span>
+                    {job.rateType && job.rateAmount && (
+                      <span className="text-xs font-medium text-accent">
+                        {RATE_RANGES[job.rateType]?.label}: ₹{job.rateAmount}
+                      </span>
+                    )}
                   </div>
                   <p className="text-foreground text-sm md:text-base">{job.description}</p>
                   <div className="flex flex-wrap items-center gap-3 md:gap-4 text-xs text-muted-foreground mt-3">

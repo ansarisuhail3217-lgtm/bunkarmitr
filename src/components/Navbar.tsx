@@ -33,7 +33,7 @@ export default function Navbar() {
       <div className="container mx-auto flex items-center justify-between h-14 px-4">
         <Link to="/" className="flex items-center gap-2 font-bold text-lg">
           <span className="text-gradient-hero text-xl">🪡</span>
-          <span className="text-gradient-hero font-extrabold">LoomLink</span>
+          <span className="text-gradient-hero font-extrabold">SareeSetu</span>
         </Link>
 
         {/* Desktop nav */}

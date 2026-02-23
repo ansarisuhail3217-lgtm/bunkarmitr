@@ -6,9 +6,9 @@ const JOBS_KEY = 'sareesetu_jobs';
 const RATINGS_KEY = 'sareesetu_ratings';
 const AUTH_KEY = 'sareesetu_auth';
 
-// Gorakhpur default coords
-export const DEFAULT_LAT = 26.7606;
-export const DEFAULT_LNG = 83.3732;
+// Varanasi default coords
+export const DEFAULT_LAT = 25.3176;
+export const DEFAULT_LNG = 82.9739;
 
 function load<T>(key: string, fallback: T[]): T[] {
   try {

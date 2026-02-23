@@ -1,26 +1,52 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { getCurrentUser, getJobs, saveJobs } from '@/lib/store';
-import { ROLE_LABELS, UserRole, Job } from '@/lib/types';
+import { ROLE_LABELS, UserRole, Job, RATE_RANGES } from '@/lib/types';
 import Navbar from '@/components/Navbar';
 import { toast } from 'sonner';
 
 const roles = Object.entries(ROLE_LABELS) as [UserRole, string][];
+const rateTypes = Object.entries(RATE_RANGES) as [string, { label: string; min: number; max: number }][];
 
 export default function PostJob() {
   const user = getCurrentUser();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [form, setForm] = useState({ roleRequired: '' as UserRole, description: '', urgency: 'medium' as 'low' | 'medium' | 'high' });
+  const [form, setForm] = useState({
+    roleRequired: '' as UserRole,
+    description: '',
+    urgency: 'medium' as 'low' | 'medium' | 'high',
+    rateType: 'saree' as string,
+    rateAmount: '' as string,
+  });
 
   if (!user) {
     navigate(`/login?redirect=${encodeURIComponent(location.pathname)}`);
     return null;
   }
 
+  if (user.role !== 'girasta') {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="container mx-auto px-4 py-16 text-center">
+          <p className="text-lg text-destructive font-semibold">⚠️ केवल गिरस्ता ही काम पोस्ट कर सकते हैं</p>
+          <p className="text-sm text-muted-foreground mt-2">काम पोस्ट करने के लिए गिरस्ता के रूप में पंजीकरण करें</p>
+        </div>
+      </div>
+    );
+  }
+
+  const selectedRate = RATE_RANGES[form.rateType];
+
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
+    const amount = Number(form.rateAmount);
+    if (selectedRate && (amount < selectedRate.min || amount > selectedRate.max)) {
+      toast.error(`${selectedRate.label} का रेट ₹${selectedRate.min}-₹${selectedRate.max} के बीच होना चाहिए`);
+      return;
+    }
     const jobs = getJobs();
     const newJob: Job = {
       id: `job_${Date.now()}`,
@@ -31,6 +57,8 @@ export default function PostJob() {
       urgency: form.urgency,
       area: user.area,
       status: 'open',
+      rateType: form.rateType as any,
+      rateAmount: amount || undefined,
       createdAt: new Date().toISOString(),
     };
     saveJobs([...jobs, newJob]);
@@ -57,6 +85,26 @@ export default function PostJob() {
               <label className="block text-sm font-medium mb-1.5">काम का विवरण *</label>
               <textarea value={form.description} onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))} required rows={4} placeholder="काम के बारे में बताएं..."
                 className="w-full px-4 py-3 rounded-xl border border-input bg-background text-foreground focus:ring-2 focus:ring-ring outline-none resize-none" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1.5">रेट प्रकार</label>
+              <div className="flex gap-2">
+                {rateTypes.map(([key, { label, min, max }]) => (
+                  <button key={key} type="button" onClick={() => setForm((p) => ({ ...p, rateType: key, rateAmount: '' }))}
+                    className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors border ${
+                      form.rateType === key ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-background text-muted-foreground hover:bg-muted'
+                    }`}>
+                    {label} (₹{min}-{max})
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1.5">रेट (₹) *</label>
+              <input type="number" value={form.rateAmount} onChange={(e) => setForm((p) => ({ ...p, rateAmount: e.target.value }))}
+                placeholder={selectedRate ? `₹${selectedRate.min} - ₹${selectedRate.max}` : ''}
+                min={selectedRate?.min} max={selectedRate?.max} required
+                className="w-full px-4 py-3 rounded-xl border border-input bg-background text-foreground focus:ring-2 focus:ring-ring outline-none" />
             </div>
             <div>
               <label className="block text-sm font-medium mb-1.5">तात्कालिकता</label>

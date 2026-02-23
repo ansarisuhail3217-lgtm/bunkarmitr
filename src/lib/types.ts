@@ -19,15 +19,12 @@ export const ROLE_LABELS: Record<UserRole, string> = {
   deka_vale: 'डेका वाले',
 };
 
-export const GORAKHPUR_AREAS = [
-  'गोरखनाथ', 'बसंतपुर', 'मोहद्दीपुर', 'शाहपुर', 'गोलघर',
-  'रेती', 'बेतियाहाता', 'रापतीनगर', 'तरंगपानी', 'पिपीगंज',
-  'कुसमही', 'सहजनवा', 'खोराबार', 'हुमायूंपुर', 'धर्मशाला बाज़ार',
-  'जंगल धूसर', 'पादरी बाज़ार', 'माया बाज़ार', 'रसूलपुर', 'चौरी चौरा',
+export const VARANASI_AREAS = [
+  'लंका', 'मदनपुरा', 'अलईपुरा', 'चौक', 'भेलूपुर',
+  'लल्लापुरा', 'कज्जकपुरा', 'लोहता', 'बजरडीहा', 'सारनाथ',
+  'पांडेयपुर', 'सिगरा', 'कबीरचौरा', 'गोदौलिया', 'दशाश्वमेध',
+  'अस्सी', 'शिवपुर', 'रामनगर', 'चेतगंज', 'महमूरगंज',
 ];
-
-// Keep backward compat alias
-export const VARANASI_AREAS = GORAKHPUR_AREAS;
 
 export interface User {
   id: string;
@@ -57,6 +54,8 @@ export interface Job {
   urgency: 'low' | 'medium' | 'high';
   area: string;
   status: 'open' | 'filled';
+  rateType?: 'saree' | 'dupatta' | 'suit';
+  rateAmount?: number;
   createdAt: string;
 }
 
@@ -75,4 +74,10 @@ export const URGENCY_LABELS: Record<string, string> = {
   low: 'सामान्य',
   medium: 'जरूरी',
   high: 'बहुत जरूरी',
+};
+
+export const RATE_RANGES: Record<string, { label: string; min: number; max: number }> = {
+  saree: { label: 'साड़ी', min: 80, max: 150 },
+  dupatta: { label: 'दुपट्टा', min: 25, max: 40 },
+  suit: { label: 'सूट', min: 35, max: 40 },
 };

@@ -33,12 +33,12 @@ export default function HomePage() {
             className="max-w-2xl"
           >
             <h1 className="text-2xl md:text-5xl font-extrabold text-primary-foreground leading-tight">
-              🪡 <span className="text-accent">LoomLink</span>
+              🪡 <span className="text-accent">SareeSetu</span>
               <br />
               <span className="text-xl md:text-3xl font-semibold opacity-90">वॉइस-फर्स्ट साड़ी इंडस्ट्री नेटवर्क</span>
             </h1>
             <p className="mt-4 text-primary-foreground/80 text-sm md:text-lg max-w-lg">
-              गोरखपुर की बनारसी साड़ी इंडस्ट्री के लिए एक डिजिटल प्लेटफ़ॉर्म। हिंदी में बोलकर काम खोजें, पास के कारीगरों से जुड़ें।
+              वाराणसी की बनारसी साड़ी इंडस्ट्री के लिए एक डिजिटल प्लेटफ़ॉर्म। हिंदी में बोलकर काम खोजें, पास के कारीगरों से जुड़ें।
             </p>
             <div className="mt-6 md:mt-8 flex flex-wrap gap-3">
               <Link to="/register" className="inline-flex items-center gap-2 px-5 md:px-6 py-2.5 md:py-3 gradient-hero text-primary-foreground font-semibold rounded-xl shadow-warm hover:scale-105 transition-transform text-sm md:text-base">
@@ -99,8 +99,8 @@ export default function HomePage() {
 
       {/* CTA */}
       <section className="container mx-auto px-4 py-12 md:py-16 text-center">
-        <h2 className="text-xl md:text-2xl font-bold mb-3">अभी जुड़ें LoomLink से</h2>
-        <p className="text-muted-foreground mb-6 text-sm md:text-base">गोरखपुर की साड़ी इंडस्ट्री को डिजिटल बनाएँ</p>
+        <h2 className="text-xl md:text-2xl font-bold mb-3">अभी जुड़ें SareeSetu से</h2>
+        <p className="text-muted-foreground mb-6 text-sm md:text-base">वाराणसी की साड़ी इंडस्ट्री को डिजिटल बनाएँ</p>
         <Link to="/register" className="inline-flex px-8 py-3 gradient-hero text-primary-foreground font-semibold rounded-xl shadow-warm hover:scale-105 transition-transform">
           नया पंजीकरण करें
         </Link>
@@ -109,9 +109,9 @@ export default function HomePage() {
       {/* Footer */}
       <footer className="bg-secondary text-secondary-foreground py-8">
         <div className="container mx-auto px-4 text-center text-sm space-y-2">
-          <p className="font-semibold text-lg">🪡 LoomLink</p>
-          <p>गोरखपुर – 273001, भारत</p>
-          <p className="text-secondary-foreground/70">© 2026 LoomLink. सर्वाधिकार सुरक्षित।</p>
+          <p className="font-semibold text-lg">🪡 SareeSetu</p>
+          <p>वाराणसी – 221001, भारत</p>
+          <p className="text-secondary-foreground/70">© 2026 SareeSetu. सर्वाधिकार सुरक्षित।</p>
           <Link to="/about" className="text-accent hover:underline">हमारे बारे में</Link>
         </div>
       </footer>
