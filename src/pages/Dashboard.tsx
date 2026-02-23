@@ -43,7 +43,7 @@ export default function Dashboard() {
           {[
             { to: '/search', icon: Users, label: 'पास के लोग', color: 'gradient-hero' },
             { to: '/jobs', icon: Briefcase, label: 'काम ढूंढें', color: 'gradient-gold' },
-            { to: '/post-job', icon: Plus, label: 'काम दें', color: 'gradient-hero' },
+            ...(user.role === 'girasta' ? [{ to: '/post-job', icon: Plus, label: 'काम दें', color: 'gradient-hero' }] : []),
             { to: `/profile/${user.id}`, icon: Star, label: 'प्रोफ़ाइल', color: 'gradient-gold' },
           ].map((a) => (
             <Link key={a.to} to={a.to} className="bg-card rounded-xl p-3 md:p-4 shadow-card border border-border hover:shadow-elevated hover:-translate-y-0.5 transition-all text-center">

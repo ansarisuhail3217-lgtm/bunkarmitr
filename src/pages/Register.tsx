@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ROLE_LABELS, GORAKHPUR_AREAS, UserRole, User } from '@/lib/types';
+import { ROLE_LABELS, VARANASI_AREAS, UserRole, User } from '@/lib/types';
 import { getUsers, saveUsers, setCurrentUser, DEFAULT_LAT, DEFAULT_LNG } from '@/lib/store';
 import Navbar from '@/components/Navbar';
 import { ChevronLeft, ChevronRight, MapPin } from 'lucide-react';
@@ -26,7 +26,7 @@ export default function RegisterPage() {
     setLocating(true);
     navigator.geolocation.getCurrentPosition(
       (pos) => { setLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude }); setLocating(false); toast.success('लोकेशन मिल गई!'); },
-      () => { setLocation({ lat: DEFAULT_LAT, lng: DEFAULT_LNG }); setLocating(false); toast.info('डिफ़ॉल्ट लोकेशन (गोरखपुर) सेट की गई'); }
+      () => { setLocation({ lat: DEFAULT_LAT, lng: DEFAULT_LNG }); setLocating(false); toast.info('डिफ़ॉल्ट लोकेशन (वाराणसी) सेट की गई'); }
     );
   };
 
@@ -121,7 +121,7 @@ export default function RegisterPage() {
                 <select value={form.area} onChange={(e) => update('area', e.target.value)}
                   className="w-full px-4 py-3 rounded-xl border border-input bg-background text-foreground focus:ring-2 focus:ring-ring outline-none">
                   <option value="">इलाका चुनें</option>
-                  {GORAKHPUR_AREAS.map((a) => <option key={a} value={a}>{a}</option>)}
+                  {VARANASI_AREAS.map((a) => <option key={a} value={a}>{a}</option>)}
                 </select>
               </div>
               <div>
@@ -149,7 +149,7 @@ export default function RegisterPage() {
           {/* Step 3: Location */}
           {step === 3 && (
             <div className="space-y-4 text-center">
-              <p className="text-sm text-muted-foreground">अपनी लोकेशन शेयर करें ताकि गोरखपुर में पास के लोग आपको ढूंढ सकें</p>
+              <p className="text-sm text-muted-foreground">अपनी लोकेशन शेयर करें ताकि वाराणसी में पास के लोग आपको ढूंढ सकें</p>
               <button onClick={getLocation} disabled={locating}
                 className="inline-flex items-center gap-2 px-6 py-3 gradient-hero text-primary-foreground font-semibold rounded-xl shadow-warm hover:scale-105 transition-transform disabled:opacity-50">
                 <MapPin size={18} /> {locating ? 'खोज रहे हैं...' : 'लोकेशन लें'}

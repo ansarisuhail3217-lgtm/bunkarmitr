@@ -9,7 +9,7 @@ import { Search, Map, List } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 
 const roles = Object.entries(ROLE_LABELS) as [UserRole, string][];
-const distances = [2, 5, 10, 50];
+const distances = [2, 5, 10, 25];
 
 export default function NearbySearch() {
   const [params] = useSearchParams();
@@ -47,7 +47,7 @@ export default function NearbySearch() {
     <div className="min-h-screen bg-background">
       <Navbar />
       <div className="container mx-auto px-4 py-4 md:py-6">
-        <h1 className="text-xl md:text-2xl font-bold text-gradient-hero mb-4 md:mb-6">🔍 पास के लोग – गोरखपुर</h1>
+        <h1 className="text-xl md:text-2xl font-bold text-gradient-hero mb-4 md:mb-6">🔍 पास के लोग – वाराणसी</h1>
 
         {/* Search bar with inline mic */}
         <div className="relative mb-4">
