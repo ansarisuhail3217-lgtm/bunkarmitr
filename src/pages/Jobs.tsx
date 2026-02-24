@@ -12,10 +12,18 @@ export default function JobsPage() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleApply = (jobId: string) => {
+  const handleApply = (jobId: string, roleRequired: string) => {
     if (!currentUser) {
       toast.error('कृपया पहले लॉगिन करें');
       navigate(`/login?redirect=${encodeURIComponent(location.pathname)}`);
+      return;
+    }
+    if (currentUser.role === 'girasta') {
+      toast.error('गिरस्ता काम के लिए आवेदन नहीं कर सकते। आप केवल काम पोस्ट कर सकते हैं।');
+      return;
+    }
+    if (currentUser.role !== roleRequired) {
+      toast.error(`इस काम के लिए "${ROLE_LABELS[roleRequired as keyof typeof ROLE_LABELS]}" की भूमिका चाहिए। कृपया सही भूमिका से लॉगिन करें।`);
       return;
     }
     toast.success('आपने सफलतापूर्वक आवेदन किया!');
@@ -28,9 +36,11 @@ export default function JobsPage() {
         <BackButton />
         <div className="flex items-center justify-between mb-4 md:mb-6">
           <h1 className="text-xl md:text-2xl font-bold text-gradient-hero">💼 काम ढूंढें</h1>
-          <Link to="/post-job" className="px-3 md:px-4 py-2 gradient-hero text-primary-foreground text-xs md:text-sm font-semibold rounded-xl shadow-warm hover:scale-105 transition-transform">
-            + काम दें
-          </Link>
+          {currentUser?.role === 'girasta' && (
+            <Link to="/post-job" className="px-3 md:px-4 py-2 gradient-hero text-primary-foreground text-xs md:text-sm font-semibold rounded-xl shadow-warm hover:scale-105 transition-transform">
+              + काम दें
+            </Link>
+          )}
         </div>
 
         <div className="space-y-3 md:space-y-4">
@@ -60,12 +70,14 @@ export default function JobsPage() {
                     </Link>
                   </div>
                 </div>
+              {(!currentUser || currentUser.role !== 'girasta') && (
                 <button
-                  onClick={() => handleApply(job.id)}
+                  onClick={() => handleApply(job.id, job.roleRequired)}
                   className="shrink-0 px-3 py-1.5 gradient-hero text-primary-foreground text-xs font-semibold rounded-lg shadow-warm hover:scale-105 transition-transform"
                 >
                   आवेदन
                 </button>
+              )}
               </div>
             </div>
           ))}
