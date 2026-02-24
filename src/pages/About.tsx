@@ -1,4 +1,5 @@
 import Navbar from '@/components/Navbar';
+import BackButton from '@/components/BackButton';
 import { Mail, MapPin, GraduationCap, Code, Heart } from 'lucide-react';
 
 export default function AboutPage() {
@@ -6,11 +7,12 @@ export default function AboutPage() {
     <div className="min-h-screen bg-background">
       <Navbar />
       <div className="container mx-auto px-4 py-6 md:py-8 max-w-3xl">
+        <BackButton />
         {/* Project */}
         <div className="bg-card rounded-2xl p-5 md:p-8 shadow-elevated border border-border mb-8">
-          <h1 className="text-xl md:text-3xl font-extrabold text-gradient-hero mb-4">🪡 SareeSetu के बारे में</h1>
+          <h1 className="text-xl md:text-3xl font-extrabold text-gradient-hero mb-4">Sareemitra के बारे में</h1>
           <p className="text-foreground leading-relaxed mb-4 text-sm md:text-base">
-            SareeSetu एक <strong>Voice-First AI Job & Service Matching Web Application</strong> है जो वाराणसी की बनारसी साड़ी इंडस्ट्री के लिए डिज़ाइन की गई है।
+            Sareemitra एक <strong>Voice-First AI Job & Service Matching Web Application</strong> है जो वाराणसी की बनारसी साड़ी इंडस्ट्री के लिए डिज़ाइन की गई है।
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
             {['GPS Matching – पास के कारीगर खोजें', 'Hindi Voice AI – हिंदी में बोलकर खोजें', 'Real-time Work Matching – तुरंत काम ढूंढें', 'Rating System – रेटिंग और रिव्यू दें'].map((f, i) => (

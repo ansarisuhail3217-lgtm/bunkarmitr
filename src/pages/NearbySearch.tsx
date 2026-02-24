@@ -4,6 +4,7 @@ import { ROLE_LABELS, UserRole } from '@/lib/types';
 import UserCard from '@/components/UserCard';
 import VoiceButton from '@/components/VoiceButton';
 import Navbar from '@/components/Navbar';
+import BackButton from '@/components/BackButton';
 import NearbyMap from '@/components/NearbyMap';
 import { Search, Map, List } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
@@ -47,6 +48,7 @@ export default function NearbySearch() {
     <div className="min-h-screen bg-background">
       <Navbar />
       <div className="container mx-auto px-4 py-4 md:py-6">
+        <BackButton />
         <h1 className="text-xl md:text-2xl font-bold text-gradient-hero mb-4 md:mb-6">🔍 पास के लोग – वाराणसी</h1>
 
         {/* Search bar with inline mic */}

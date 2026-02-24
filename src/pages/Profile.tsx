@@ -3,6 +3,7 @@ import { getUsers, getRatings, getCurrentUser } from '@/lib/store';
 import { ROLE_LABELS } from '@/lib/types';
 import StarRating from '@/components/StarRating';
 import Navbar from '@/components/Navbar';
+import BackButton from '@/components/BackButton';
 import { MapPin, Clock, Phone, Check, X, Navigation } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -40,6 +41,7 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-background">
       <Navbar />
       <div className="container mx-auto px-4 py-4 md:py-6 max-w-2xl">
+        <BackButton />
         {/* Profile Header */}
         <div className="bg-card rounded-2xl p-5 md:p-6 shadow-elevated border border-border mb-6">
           <div className="flex items-center gap-3 md:gap-4 mb-4">

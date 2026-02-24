@@ -3,6 +3,7 @@ import { getCurrentUser, setCurrentUser } from '@/lib/store';
 import { useState } from 'react';
 import { Menu, X, LogOut, User, Home } from 'lucide-react';
 import { toast } from 'sonner';
+import SareemitraLogo from '@/components/SareemitraLogo';
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -32,8 +33,7 @@ export default function Navbar() {
     <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border">
       <div className="container mx-auto flex items-center justify-between h-14 px-4">
         <Link to="/" className="flex items-center gap-2 font-bold text-lg">
-          <span className="text-gradient-hero text-xl">🪡</span>
-          <span className="text-gradient-hero font-extrabold">SareeSetu</span>
+          <SareemitraLogo size={28} />
         </Link>
 
         {/* Desktop nav */}

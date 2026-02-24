@@ -4,6 +4,7 @@ import { getCurrentUser, getUsers, saveUsers, getRatings, saveRatings } from '@/
 import { Rating } from '@/lib/types';
 import StarRating from '@/components/StarRating';
 import Navbar from '@/components/Navbar';
+import BackButton from '@/components/BackButton';
 import { toast } from 'sonner';
 
 export default function RatePage() {
@@ -63,7 +64,9 @@ export default function RatePage() {
     <div className="min-h-screen bg-background">
       <Navbar />
       <div className="container mx-auto px-4 py-6 md:py-8 flex justify-center">
-        <div className="w-full max-w-md bg-card rounded-2xl shadow-elevated border border-border p-5 md:p-8">
+        <div className="w-full max-w-md">
+          <BackButton />
+          <div className="bg-card rounded-2xl shadow-elevated border border-border p-5 md:p-8">
           <h1 className="text-xl md:text-2xl font-bold text-center text-gradient-hero mb-2">रेटिंग दें</h1>
           <p className="text-center text-sm text-muted-foreground mb-6">{receiver.name} को रेटिंग दें</p>
           <form onSubmit={submit} className="space-y-5">
@@ -80,6 +83,7 @@ export default function RatePage() {
               रेटिंग सबमिट करें
             </button>
           </form>
+          </div>
         </div>
       </div>
     </div>

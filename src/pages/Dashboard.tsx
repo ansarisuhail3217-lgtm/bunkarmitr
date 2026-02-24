@@ -1,6 +1,7 @@
 import { getCurrentUser, getJobs } from '@/lib/store';
 import { ROLE_LABELS, URGENCY_LABELS } from '@/lib/types';
 import Navbar from '@/components/Navbar';
+import BackButton from '@/components/BackButton';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Briefcase, Users, Star, Plus, MapPin, Clock } from 'lucide-react';
 
@@ -22,6 +23,7 @@ export default function Dashboard() {
     <div className="min-h-screen bg-background">
       <Navbar />
       <div className="container mx-auto px-4 py-4 md:py-6">
+        <BackButton />
         {/* Welcome */}
         <div className="bg-card rounded-2xl p-4 md:p-6 shadow-card border border-border mb-6">
           <div className="flex items-center gap-3 md:gap-4">
