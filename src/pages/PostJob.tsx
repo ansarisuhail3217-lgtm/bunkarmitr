@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { getCurrentUser, getJobs, saveJobs } from '@/lib/store';
 import { ROLE_LABELS, UserRole, Job, RATE_RANGES } from '@/lib/types';
 import Navbar from '@/components/Navbar';
+import BackButton from '@/components/BackButton';
 import { toast } from 'sonner';
 
 const roles = Object.entries(ROLE_LABELS) as [UserRole, string][];
@@ -70,7 +71,9 @@ export default function PostJob() {
     <div className="min-h-screen bg-background">
       <Navbar />
       <div className="container mx-auto px-4 py-6 md:py-8 flex justify-center">
-        <div className="w-full max-w-lg bg-card rounded-2xl shadow-elevated border border-border p-5 md:p-8">
+        <div className="w-full max-w-lg">
+          <BackButton />
+          <div className="bg-card rounded-2xl shadow-elevated border border-border p-5 md:p-8">
           <h1 className="text-xl md:text-2xl font-bold text-center text-gradient-hero mb-6">काम दें</h1>
           <form onSubmit={submit} className="space-y-5">
             <div>
@@ -125,6 +128,7 @@ export default function PostJob() {
               काम पोस्ट करें
             </button>
           </form>
+          </div>
         </div>
       </div>
     </div>

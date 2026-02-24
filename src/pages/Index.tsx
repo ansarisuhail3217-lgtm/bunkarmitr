@@ -4,6 +4,7 @@ import { Mic, MapPin, Search, Star, Users, Briefcase } from 'lucide-react';
 import { ROLE_LABELS, UserRole } from '@/lib/types';
 import heroBanner from '@/assets/hero-banner.jpg';
 import Navbar from '@/components/Navbar';
+import SareemitraLogo from '@/components/SareemitraLogo';
 
 const features = [
   { icon: Mic, title: 'हिंदी वॉइस सर्च', desc: 'हिंदी में बोलकर काम और सेवा खोजें' },
@@ -33,7 +34,7 @@ export default function HomePage() {
             className="max-w-2xl"
           >
             <h1 className="text-2xl md:text-5xl font-extrabold text-primary-foreground leading-tight">
-              🪡 <span className="text-accent">SareeSetu</span>
+              <span className="text-accent">Sareemitra</span>
               <br />
               <span className="text-xl md:text-3xl font-semibold opacity-90">वॉइस-फर्स्ट साड़ी इंडस्ट्री नेटवर्क</span>
             </h1>
@@ -99,7 +100,7 @@ export default function HomePage() {
 
       {/* CTA */}
       <section className="container mx-auto px-4 py-12 md:py-16 text-center">
-        <h2 className="text-xl md:text-2xl font-bold mb-3">अभी जुड़ें SareeSetu से</h2>
+        <h2 className="text-xl md:text-2xl font-bold mb-3">अभी जुड़ें Sareemitra से</h2>
         <p className="text-muted-foreground mb-6 text-sm md:text-base">वाराणसी की साड़ी इंडस्ट्री को डिजिटल बनाएँ</p>
         <Link to="/register" className="inline-flex px-8 py-3 gradient-hero text-primary-foreground font-semibold rounded-xl shadow-warm hover:scale-105 transition-transform">
           नया पंजीकरण करें
@@ -109,9 +110,9 @@ export default function HomePage() {
       {/* Footer */}
       <footer className="bg-secondary text-secondary-foreground py-8">
         <div className="container mx-auto px-4 text-center text-sm space-y-2">
-          <p className="font-semibold text-lg">🪡 SareeSetu</p>
+          <SareemitraLogo size={24} />
           <p>वाराणसी – 221001, भारत</p>
-          <p className="text-secondary-foreground/70">© 2026 SareeSetu. सर्वाधिकार सुरक्षित।</p>
+          <p className="text-secondary-foreground/70">© 2026 Sareemitra. सर्वाधिकार सुरक्षित।</p>
           <Link to="/about" className="text-accent hover:underline">हमारे बारे में</Link>
         </div>
       </footer>

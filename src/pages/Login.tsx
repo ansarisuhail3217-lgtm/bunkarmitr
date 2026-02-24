@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { getUsers, setCurrentUser } from '@/lib/store';
 import Navbar from '@/components/Navbar';
+import BackButton from '@/components/BackButton';
 import { toast } from 'sonner';
 
 export default function LoginPage() {
@@ -28,7 +29,9 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="container mx-auto px-4 py-8 md:py-12 flex justify-center">
+      <div className="container mx-auto px-4 py-6 md:py-12 flex justify-center">
+        <div className="w-full max-w-md">
+        <BackButton />
         <div className="w-full max-w-md bg-card rounded-2xl shadow-elevated border border-border p-6 md:p-8">
           <h1 className="text-2xl font-bold text-center text-gradient-hero mb-6">लॉगिन करें</h1>
           <form onSubmit={handleLogin} className="space-y-5">
@@ -57,6 +60,7 @@ export default function LoginPage() {
             <p>मोबाइल: 9876543210 (बानी)</p>
             <p>मोबाइल: 9876543212 (गिरस्ता)</p>
           </div>
+        </div>
         </div>
       </div>
     </div>

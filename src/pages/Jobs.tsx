@@ -1,6 +1,7 @@
 import { getJobs, getCurrentUser } from '@/lib/store';
 import { ROLE_LABELS, URGENCY_LABELS, RATE_RANGES } from '@/lib/types';
 import Navbar from '@/components/Navbar';
+import BackButton from '@/components/BackButton';
 import { MapPin, Clock } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -24,6 +25,7 @@ export default function JobsPage() {
     <div className="min-h-screen bg-background">
       <Navbar />
       <div className="container mx-auto px-4 py-4 md:py-6">
+        <BackButton />
         <div className="flex items-center justify-between mb-4 md:mb-6">
           <h1 className="text-xl md:text-2xl font-bold text-gradient-hero">💼 काम ढूंढें</h1>
           <Link to="/post-job" className="px-3 md:px-4 py-2 gradient-hero text-primary-foreground text-xs md:text-sm font-semibold rounded-xl shadow-warm hover:scale-105 transition-transform">

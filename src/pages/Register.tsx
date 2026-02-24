@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ROLE_LABELS, VARANASI_AREAS, UserRole, User } from '@/lib/types';
 import { getUsers, saveUsers, setCurrentUser, DEFAULT_LAT, DEFAULT_LNG } from '@/lib/store';
 import Navbar from '@/components/Navbar';
+import BackButton from '@/components/BackButton';
 import { ChevronLeft, ChevronRight, MapPin } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -67,7 +68,9 @@ export default function RegisterPage() {
     <div className="min-h-screen bg-background">
       <Navbar />
       <div className="container mx-auto px-4 py-6 md:py-8 flex justify-center">
-        <div className="w-full max-w-lg bg-card rounded-2xl shadow-elevated border border-border p-5 md:p-8">
+        <div className="w-full max-w-lg">
+          <BackButton />
+          <div className="bg-card rounded-2xl shadow-elevated border border-border p-5 md:p-8">
           <h1 className="text-xl md:text-2xl font-bold text-center text-gradient-hero mb-2">नया पंजीकरण</h1>
 
           {/* Progress */}
@@ -177,6 +180,7 @@ export default function RegisterPage() {
                 पंजीकरण करें
               </button>
             )}
+          </div>
           </div>
         </div>
       </div>

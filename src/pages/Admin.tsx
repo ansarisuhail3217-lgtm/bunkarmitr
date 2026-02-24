@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { getUsers, saveUsers, getJobs } from '@/lib/store';
 import { ROLE_LABELS } from '@/lib/types';
 import Navbar from '@/components/Navbar';
+import BackButton from '@/components/BackButton';
 import { Users, Briefcase, ShieldCheck, XCircle, CheckCircle } from 'lucide-react';
 
 export default function AdminPanel() {
@@ -32,6 +33,7 @@ export default function AdminPanel() {
     <div className="min-h-screen bg-background">
       <Navbar />
       <div className="container mx-auto px-4 py-6">
+        <BackButton />
         <h1 className="text-2xl font-bold text-gradient-hero mb-6">🛡️ एडमिन पैनल</h1>
 
         {/* Stats */}
