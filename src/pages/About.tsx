@@ -69,6 +69,14 @@ export default function AboutPage() {
             </ul>
           </div>
         </div>
+
+        {/* Credits */}
+        <div className="bg-card rounded-2xl p-5 md:p-8 shadow-elevated border border-border mt-8 text-center">
+          <h2 className="text-lg font-bold text-gradient-hero mb-3">आभार 🙏</h2>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Thanks to <strong className="text-foreground">Code Yogi Prashant Sir</strong> and Project Mentor <strong className="text-foreground">Ved Sir</strong> and the learning community. I am grateful for the skills and confidence I gained.
+          </p>
+        </div>
       </div>
     </div>
   );
