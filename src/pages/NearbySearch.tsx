@@ -1,6 +1,6 @@
-import { useState, useMemo } from 'react';
-import { getUsers, getCurrentUser, getDistance, DEFAULT_LAT, DEFAULT_LNG } from '@/lib/store';
-import { ROLE_LABELS, UserRole } from '@/lib/types';
+import { useState, useMemo, useEffect } from 'react';
+import { fetchUsers, getCurrentUser, getDistance, DEFAULT_LAT, DEFAULT_LNG } from '@/lib/store';
+import { ROLE_LABELS, UserRole, User } from '@/lib/types';
 import UserCard from '@/components/UserCard';
 import VoiceButton from '@/components/VoiceButton';
 import Navbar from '@/components/Navbar';
@@ -18,11 +18,15 @@ export default function NearbySearch() {
   const [distFilter, setDistFilter] = useState(10);
   const [textSearch, setTextSearch] = useState('');
   const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
   const currentUser = getCurrentUser();
   const userLat = currentUser?.lat || DEFAULT_LAT;
   const userLng = currentUser?.lng || DEFAULT_LNG;
 
-  const users = getUsers();
+  useEffect(() => {
+    fetchUsers().then((u) => { setUsers(u); setLoading(false); });
+  }, []);
 
   const filtered = useMemo(() => {
     return users
@@ -92,28 +96,34 @@ export default function NearbySearch() {
           </div>
         </div>
 
-        <p className="text-sm text-muted-foreground mb-4">{filtered.length} लोग मिले</p>
-
-        {viewMode === 'map' ? (
-          <NearbyMap
-            users={filtered.map((f) => f.user)}
-            userLat={userLat}
-            userLng={userLng}
-            distances={filtered}
-          />
+        {loading ? (
+          <p className="text-sm text-muted-foreground">लोड हो रहा है...</p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
-            {filtered.map(({ user, distance }) => (
-              <UserCard key={user.id} user={user} distance={distance} />
-            ))}
-          </div>
-        )}
+          <>
+            <p className="text-sm text-muted-foreground mb-4">{filtered.length} लोग मिले</p>
 
-        {filtered.length === 0 && (
-          <div className="text-center py-16 text-muted-foreground">
-            <p className="text-lg">कोई व्यक्ति नहीं मिला</p>
-            <p className="text-sm mt-1">दूरी बढ़ाएँ या फ़िल्टर बदलें</p>
-          </div>
+            {viewMode === 'map' ? (
+              <NearbyMap
+                users={filtered.map((f) => f.user)}
+                userLat={userLat}
+                userLng={userLng}
+                distances={filtered}
+              />
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+                {filtered.map(({ user, distance }) => (
+                  <UserCard key={user.id} user={user} distance={distance} />
+                ))}
+              </div>
+            )}
+
+            {filtered.length === 0 && (
+              <div className="text-center py-16 text-muted-foreground">
+                <p className="text-lg">कोई व्यक्ति नहीं मिला</p>
+                <p className="text-sm mt-1">दूरी बढ़ाएँ या फ़िल्टर बदलें</p>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

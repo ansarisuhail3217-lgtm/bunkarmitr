@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { getCurrentUser, getJobs, saveJobs } from '@/lib/store';
-import { ROLE_LABELS, UserRole, Job, RATE_RANGES } from '@/lib/types';
+import { getCurrentUser, createJob } from '@/lib/store';
+import { ROLE_LABELS, UserRole, RATE_RANGES } from '@/lib/types';
 import Navbar from '@/components/Navbar';
 import BackButton from '@/components/BackButton';
 import { toast } from 'sonner';
@@ -21,6 +21,7 @@ export default function PostJob() {
     rateType: 'saree' as string,
     rateAmount: '' as string,
   });
+  const [submitting, setSubmitting] = useState(false);
 
   if (!user) {
     navigate(`/login?redirect=${encodeURIComponent(location.pathname)}`);
@@ -41,16 +42,15 @@ export default function PostJob() {
 
   const selectedRate = RATE_RANGES[form.rateType];
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     const amount = Number(form.rateAmount);
     if (selectedRate && (amount < selectedRate.min || amount > selectedRate.max)) {
       toast.error(`${selectedRate.label} का रेट ₹${selectedRate.min}-₹${selectedRate.max} के बीच होना चाहिए`);
       return;
     }
-    const jobs = getJobs();
-    const newJob: Job = {
-      id: `job_${Date.now()}`,
+    setSubmitting(true);
+    const newJob = await createJob({
       postedBy: user.id,
       postedByName: user.name,
       roleRequired: form.roleRequired,
@@ -60,11 +60,14 @@ export default function PostJob() {
       status: 'open',
       rateType: form.rateType as any,
       rateAmount: amount || undefined,
-      createdAt: new Date().toISOString(),
-    };
-    saveJobs([...jobs, newJob]);
-    toast.success('काम सफलतापूर्वक पोस्ट किया गया!');
-    navigate('/dashboard');
+    });
+    setSubmitting(false);
+    if (newJob) {
+      toast.success('काम सफलतापूर्वक पोस्ट किया गया!');
+      navigate('/dashboard');
+    } else {
+      toast.error('काम पोस्ट करने में त्रुटि हुई');
+    }
   };
 
   return (
@@ -124,8 +127,8 @@ export default function PostJob() {
                 ))}
               </div>
             </div>
-            <button type="submit" className="w-full py-3 gradient-hero text-primary-foreground font-semibold rounded-xl shadow-warm hover:scale-[1.02] transition-transform">
-              काम पोस्ट करें
+            <button type="submit" disabled={submitting} className="w-full py-3 gradient-hero text-primary-foreground font-semibold rounded-xl shadow-warm hover:scale-[1.02] transition-transform disabled:opacity-50">
+              {submitting ? 'पोस्ट हो रहा...' : 'काम पोस्ट करें'}
             </button>
           </form>
           </div>
