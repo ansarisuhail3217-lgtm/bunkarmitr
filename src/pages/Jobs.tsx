@@ -1,5 +1,6 @@
-import { getJobs, getCurrentUser } from '@/lib/store';
-import { ROLE_LABELS, URGENCY_LABELS, RATE_RANGES } from '@/lib/types';
+import { useState, useEffect } from 'react';
+import { fetchJobs, getCurrentUser } from '@/lib/store';
+import { ROLE_LABELS, URGENCY_LABELS, RATE_RANGES, Job } from '@/lib/types';
 import Navbar from '@/components/Navbar';
 import BackButton from '@/components/BackButton';
 import { MapPin, Clock } from 'lucide-react';
@@ -7,10 +8,18 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 
 export default function JobsPage() {
-  const jobs = getJobs().filter((j) => j.status === 'open');
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [loading, setLoading] = useState(true);
   const currentUser = getCurrentUser();
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    fetchJobs().then((all) => {
+      setJobs(all.filter((j) => j.status === 'open'));
+      setLoading(false);
+    });
+  }, []);
 
   const handleApply = (jobId: string, roleRequired: string) => {
     if (!currentUser) {
@@ -28,6 +37,13 @@ export default function JobsPage() {
     }
     toast.success('आपने सफलतापूर्वक आवेदन किया!');
   };
+
+  if (loading) return (
+    <div className="min-h-screen bg-background">
+      <Navbar />
+      <div className="container mx-auto px-4 py-16 text-center text-muted-foreground">लोड हो रहा है...</div>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-background">

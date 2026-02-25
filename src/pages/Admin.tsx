@@ -1,25 +1,34 @@
-import { useState } from 'react';
-import { getUsers, saveUsers, getJobs } from '@/lib/store';
-import { ROLE_LABELS } from '@/lib/types';
+import { useState, useEffect } from 'react';
+import { fetchUsers, fetchJobs, updateUser, deleteUser as deleteUserFromDb } from '@/lib/store';
+import { ROLE_LABELS, User, Job } from '@/lib/types';
 import Navbar from '@/components/Navbar';
 import BackButton from '@/components/BackButton';
 import { Users, Briefcase, ShieldCheck, XCircle, CheckCircle } from 'lucide-react';
 
 export default function AdminPanel() {
   const [tab, setTab] = useState<'users' | 'jobs'>('users');
-  const [users, setUsers] = useState(getUsers());
-  const jobs = getJobs();
+  const [users, setUsers] = useState<User[]>([]);
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const toggleApproval = (id: string) => {
-    const updated = users.map((u) => u.id === id ? { ...u, isApproved: !u.isApproved } : u);
-    setUsers(updated);
-    saveUsers(updated);
+  useEffect(() => {
+    Promise.all([fetchUsers(), fetchJobs()]).then(([u, j]) => {
+      setUsers(u);
+      setJobs(j);
+      setLoading(false);
+    });
+  }, []);
+
+  const toggleApproval = async (id: string) => {
+    const user = users.find((u) => u.id === id);
+    if (!user) return;
+    await updateUser(id, { is_approved: !user.isApproved });
+    setUsers(users.map((u) => u.id === id ? { ...u, isApproved: !u.isApproved } : u));
   };
 
-  const deleteUser = (id: string) => {
-    const updated = users.filter((u) => u.id !== id);
-    setUsers(updated);
-    saveUsers(updated);
+  const handleDeleteUser = async (id: string) => {
+    await deleteUserFromDb(id);
+    setUsers(users.filter((u) => u.id !== id));
   };
 
   const stats = {
@@ -28,6 +37,13 @@ export default function AdminPanel() {
     pending: users.filter((u) => !u.isApproved).length,
     openJobs: jobs.filter((j) => j.status === 'open').length,
   };
+
+  if (loading) return (
+    <div className="min-h-screen bg-background">
+      <Navbar />
+      <div className="container mx-auto px-4 py-16 text-center text-muted-foreground">लोड हो रहा है...</div>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-background">
@@ -92,7 +108,7 @@ export default function AdminPanel() {
                         <button onClick={() => toggleApproval(u.id)} className="p-1.5 rounded-md hover:bg-muted transition-colors" title={u.isApproved ? 'रोकें' : 'स्वीकार करें'}>
                           {u.isApproved ? <XCircle size={16} className="text-destructive" /> : <CheckCircle size={16} className="text-primary" />}
                         </button>
-                        <button onClick={() => deleteUser(u.id)} className="p-1.5 rounded-md hover:bg-destructive/10 transition-colors text-destructive" title="हटाएं">
+                        <button onClick={() => handleDeleteUser(u.id)} className="p-1.5 rounded-md hover:bg-destructive/10 transition-colors text-destructive" title="हटाएं">
                           🗑️
                         </button>
                       </div>

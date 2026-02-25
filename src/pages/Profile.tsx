@@ -1,6 +1,7 @@
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { getUsers, getRatings, getCurrentUser } from '@/lib/store';
-import { ROLE_LABELS } from '@/lib/types';
+import { fetchUserById, fetchRatingsByReceiver, getCurrentUser } from '@/lib/store';
+import { ROLE_LABELS, User, Rating } from '@/lib/types';
 import StarRating from '@/components/StarRating';
 import Navbar from '@/components/Navbar';
 import BackButton from '@/components/BackButton';
@@ -12,10 +13,26 @@ export default function ProfilePage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
-  const users = getUsers();
-  const user = users.find((u) => u.id === id);
-  const ratings = getRatings().filter((r) => r.receiverId === id);
   const currentUser = getCurrentUser();
+  const [user, setUser] = useState<User | null>(null);
+  const [ratings, setRatings] = useState<Rating[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!id) return;
+    Promise.all([fetchUserById(id), fetchRatingsByReceiver(id)]).then(([u, r]) => {
+      setUser(u);
+      setRatings(r);
+      setLoading(false);
+    });
+  }, [id]);
+
+  if (loading) return (
+    <div className="min-h-screen bg-background">
+      <Navbar />
+      <div className="container mx-auto px-4 py-16 text-center text-muted-foreground">लोड हो रहा है...</div>
+    </div>
+  );
 
   if (!user) {
     return (

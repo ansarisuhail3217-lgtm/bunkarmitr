@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
-import { getUsers, setCurrentUser } from '@/lib/store';
+import { fetchUserByMobile, setCurrentUser } from '@/lib/store';
 import Navbar from '@/components/Navbar';
 import BackButton from '@/components/BackButton';
 import { toast } from 'sonner';
@@ -8,14 +8,16 @@ import { toast } from 'sonner';
 export default function LoginPage() {
   const [mobile, setMobile] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const redirect = searchParams.get('redirect');
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const users = getUsers();
-    const user = users.find((u) => u.mobile === mobile);
+    setLoading(true);
+    const user = await fetchUserByMobile(mobile);
+    setLoading(false);
     if (user) {
       setCurrentUser(user);
       toast.success('सफलतापूर्वक लॉगिन हो गया!');
@@ -47,19 +49,14 @@ export default function LoginPage() {
               />
             </div>
             {error && <p className="text-sm text-destructive">{error}</p>}
-            <button type="submit" className="w-full py-3 gradient-hero text-primary-foreground font-semibold rounded-xl shadow-warm hover:scale-[1.02] transition-transform">
-              लॉगिन करें
+            <button type="submit" disabled={loading} className="w-full py-3 gradient-hero text-primary-foreground font-semibold rounded-xl shadow-warm hover:scale-[1.02] transition-transform disabled:opacity-50">
+              {loading ? 'लॉगिन हो रहा है...' : 'लॉगिन करें'}
             </button>
           </form>
           <p className="text-center text-sm text-muted-foreground mt-6">
             अकाउंट नहीं है?{' '}
             <Link to="/register" className="text-primary font-medium hover:underline">नया पंजीकरण करें</Link>
           </p>
-          <div className="mt-4 p-3 rounded-lg bg-muted text-xs text-muted-foreground">
-            <p className="font-medium mb-1">डेमो लॉगिन:</p>
-            <p>मोबाइल: 9876543210 (बानी)</p>
-            <p>मोबाइल: 9876543212 (गिरस्ता)</p>
-          </div>
         </div>
         </div>
       </div>

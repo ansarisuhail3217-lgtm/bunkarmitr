@@ -14,7 +14,161 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      jobs: {
+        Row: {
+          area: string
+          created_at: string
+          description: string
+          id: string
+          posted_by: string
+          posted_by_name: string
+          rate_amount: number | null
+          rate_type: string | null
+          role_required: string
+          status: string
+          urgency: string
+        }
+        Insert: {
+          area?: string
+          created_at?: string
+          description?: string
+          id?: string
+          posted_by: string
+          posted_by_name?: string
+          rate_amount?: number | null
+          rate_type?: string | null
+          role_required: string
+          status?: string
+          urgency?: string
+        }
+        Update: {
+          area?: string
+          created_at?: string
+          description?: string
+          id?: string
+          posted_by?: string
+          posted_by_name?: string
+          rate_amount?: number | null
+          rate_type?: string | null
+          role_required?: string
+          status?: string
+          urgency?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "jobs_posted_by_fkey"
+            columns: ["posted_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ratings: {
+        Row: {
+          created_at: string
+          id: string
+          job_id: string
+          rater_id: string
+          rater_name: string
+          rating_value: number
+          receiver_id: string
+          review_text: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          job_id?: string
+          rater_id: string
+          rater_name?: string
+          rating_value: number
+          receiver_id: string
+          review_text?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          job_id?: string
+          rater_id?: string
+          rater_name?: string
+          rating_value?: number
+          receiver_id?: string
+          review_text?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ratings_rater_id_fkey"
+            columns: ["rater_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ratings_receiver_id_fkey"
+            columns: ["receiver_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      users: {
+        Row: {
+          area: string
+          availability: boolean
+          average_rating: number
+          created_at: string
+          experience: string
+          id: string
+          is_approved: boolean
+          lat: number
+          lng: number
+          mobile: string
+          name: string
+          profile_image: string
+          rate: string
+          role: string
+          service_type: string
+          total_ratings: number
+        }
+        Insert: {
+          area?: string
+          availability?: boolean
+          average_rating?: number
+          created_at?: string
+          experience?: string
+          id?: string
+          is_approved?: boolean
+          lat?: number
+          lng?: number
+          mobile: string
+          name: string
+          profile_image?: string
+          rate?: string
+          role: string
+          service_type?: string
+          total_ratings?: number
+        }
+        Update: {
+          area?: string
+          availability?: boolean
+          average_rating?: number
+          created_at?: string
+          experience?: string
+          id?: string
+          is_approved?: boolean
+          lat?: number
+          lng?: number
+          mobile?: string
+          name?: string
+          profile_image?: string
+          rate?: string
+          role?: string
+          service_type?: string
+          total_ratings?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
