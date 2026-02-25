@@ -1,8 +1,6 @@
 import { useEffect, useRef } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { User, ROLE_LABELS } from '@/lib/types';
-import { Link } from 'react-router-dom';
 import 'leaflet/dist/leaflet.css';
 
 // Fix default marker icon
@@ -19,6 +17,7 @@ const userIcon = new L.Icon({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
   iconSize: [25, 41],
   iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
 });
 
 const myIcon = new L.Icon({
@@ -26,13 +25,8 @@ const myIcon = new L.Icon({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
   iconSize: [25, 41],
   iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
 });
-
-function RecenterMap({ lat, lng }: { lat: number; lng: number }) {
-  const map = useMap();
-  useEffect(() => { map.setView([lat, lng], 13); }, [lat, lng, map]);
-  return null;
-}
 
 interface NearbyMapProps {
   users: User[];
@@ -42,46 +36,57 @@ interface NearbyMapProps {
 }
 
 export default function NearbyMap({ users, userLat, userLng, distances }: NearbyMapProps) {
+  const mapRef = useRef<HTMLDivElement>(null);
+  const mapInstance = useRef<L.Map | null>(null);
   const distMap = new Map(distances.map((d) => [d.user.id, d.distance]));
+
+  useEffect(() => {
+    if (!mapRef.current || mapInstance.current) return;
+
+    // Initialize map
+    const map = L.map(mapRef.current).setView([userLat, userLng], 13);
+    mapInstance.current = map;
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    }).addTo(map);
+
+    // User location marker
+    L.marker([userLat, userLng], { icon: myIcon })
+      .addTo(map)
+      .bindPopup('📍 आपकी लोकेशन');
+
+    // Worker markers
+    users.forEach((u) => {
+      const dist = distMap.get(u.id)?.toFixed(1) ?? '?';
+      const popup = `
+        <div style="min-width:160px;font-size:13px;">
+          <p style="font-weight:bold;margin:0 0 4px">${u.name}</p>
+          <p style="margin:0;font-size:11px">${ROLE_LABELS[u.role]} • ${u.area}</p>
+          <p style="margin:0;font-size:11px">${dist} km दूर</p>
+          <div style="margin-top:8px;display:flex;gap:6px">
+            <a href="/profile/${u.id}" style="font-size:11px;padding:3px 8px;background:#3b82f6;color:white;border-radius:4px;text-decoration:none">प्रोफ़ाइल</a>
+            <a href="https://www.google.com/maps/dir/?api=1&destination=${u.lat},${u.lng}" target="_blank" rel="noopener noreferrer" style="font-size:11px;padding:3px 8px;background:#16a34a;color:white;border-radius:4px;text-decoration:none">रास्ता</a>
+          </div>
+        </div>
+      `;
+      L.marker([u.lat, u.lng], { icon: userIcon })
+        .addTo(map)
+        .bindPopup(popup);
+    });
+
+    // Fix tile loading after container resize
+    setTimeout(() => map.invalidateSize(), 100);
+
+    return () => {
+      map.remove();
+      mapInstance.current = null;
+    };
+  }, [users, userLat, userLng]);
 
   return (
     <div className="rounded-xl overflow-hidden border border-border shadow-card" style={{ height: '400px' }}>
-      <MapContainer center={[userLat, userLng]} zoom={13} style={{ height: '100%', width: '100%' }} scrollWheelZoom>
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        <RecenterMap lat={userLat} lng={userLng} />
-        
-        {/* User's location */}
-        <Marker position={[userLat, userLng]} icon={myIcon}>
-          <Popup>📍 आपकी लोकेशन</Popup>
-        </Marker>
-
-        {/* Workers */}
-        {users.map((u) => (
-          <Marker key={u.id} position={[u.lat, u.lng]} icon={userIcon}>
-            <Popup>
-              <div className="text-sm min-w-[160px]">
-                <p className="font-bold">{u.name}</p>
-                <p className="text-xs">{ROLE_LABELS[u.role]} • {u.area}</p>
-                <p className="text-xs">{distMap.get(u.id)?.toFixed(1)} km दूर</p>
-                <div className="flex gap-2 mt-2">
-                  <Link to={`/profile/${u.id}`} className="text-xs px-2 py-1 bg-blue-500 text-white rounded">प्रोफ़ाइल</Link>
-                  <a
-                    href={`https://www.google.com/maps/dir/?api=1&destination=${u.lat},${u.lng}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs px-2 py-1 bg-green-600 text-white rounded"
-                  >
-                    रास्ता
-                  </a>
-                </div>
-              </div>
-            </Popup>
-          </Marker>
-        ))}
-      </MapContainer>
+      <div ref={mapRef} style={{ height: '100%', width: '100%' }} />
     </div>
   );
 }
